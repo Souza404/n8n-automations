@@ -1,0 +1,206 @@
+{
+  "name": "Clima",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ec20b25c-b137-40a4-8892-fb4ad843e0e6",
+              "name": "clima",
+              "value": "=Temperatura: {{ $json.main.temp }}\nTemperatura mínima: {{ $json.main.temp_min }}\nTemperatura máxima: {{ $json.main.temp_max }}\nSensação térmica: {{ $json.main.feels_like }}",
+              "type": "string"
+            },
+            {
+              "id": "1778a99e-4486-4f12-8698-eaff89415fd7",
+              "name": "info",
+              "value": "=Umidade do ar: {{ $json.main.humidity }}\nPressão: {{ $json.main.pressure }}",
+              "type": "string"
+            },
+            {
+              "id": "5d724435-9c78-4515-b17d-2a0c442d9c4b",
+              "name": "vento",
+              "value": "=Velocidade do vento: {{ $json.wind.speed }} (m/s)",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        440,
+        0
+      ],
+      "id": "18ee282a-3e0c-49b7-a59e-0bf343ba3a4e",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=<Role>\nYou are a climate/weather expert with more than 20 years' experience in the field. Your name is Roberto, and you work for Botify.\n</Role> \n\n<Instructions>\nYou must provide a detailed weather report to the Botify Marketing team, stating whether or not it is feasible to hold outdoor events. \n\nYou must provide detailed information on the weather, temperature, wind and justify your answer based on the data.</Instructions> \n\n<Data>\nWeather data: {{ $json.clima }} \nGeneral information: {{ $json.info }} \nWind: {{ $json.vento }}\n</Data> \n\nWrite your answer in Portuguese (pt-BR). Use a maximum of 120 tokens.",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        660,
+        0
+      ],
+      "id": "0fdf2297-4ec2-4e1f-9c99-28f5cdad3e4f",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "model": "llama-3.3-70b-versatile",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        760,
+        160
+      ],
+      "id": "8c93c2a7-11d7-4529-9d0b-726fb1ddb746",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "5OLOZq5hGIFWJMPh",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "gustavohsc.contato@gmail.com",
+        "subject": "Botify",
+        "message": "={{ $json.text }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1020,
+        0
+      ],
+      "id": "772f1bac-4c2a-4d22-b623-9d40d655d5a2",
+      "name": "Send a message",
+      "webhookId": "ab000461-86f0-45d6-bc02-48c8419b39ba",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "MWhfboL7mtCuFs25",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "b5c5c422-0c6d-4214-b1fd-02dce0fd9041",
+      "name": "Schedule 9am"
+    },
+    {
+      "parameters": {
+        "cityName": "belo horizonte,br",
+        "language": "pt-br"
+      },
+      "type": "n8n-nodes-base.openWeatherMap",
+      "typeVersion": 1,
+      "position": [
+        220,
+        0
+      ],
+      "id": "ffa319bf-ed22-44fd-a671-c9b4cd164153",
+      "name": "OpenWeatherMap API",
+      "credentials": {
+        "openWeatherMapApi": {
+          "id": "ppV0a4ekiduDWhi5",
+          "name": "OpenWeatherMap account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule 9am": {
+      "main": [
+        [
+          {
+            "node": "OpenWeatherMap API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenWeatherMap API": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "730184b8-2f7f-4867-8a31-97c24afe6955",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f68082e8eb2ca86dfbb4aef53856fa9ec140dfe4dea002184f7d06db00b4f0a5"
+  },
+  "id": "BNBQJLwE8Pa5FxK6",
+  "tags": []
+}
