@@ -25,7 +25,6 @@ Agendamento diário às 9h para coletar dados meteorológicos de uma cidade, ger
 ## Automação
 
 ![Automação](../../img/alerta-climatico.png)
-![Complexidade: 1/5](https://img.shields.io/badge/Complexidade-1%2F5-red?style=flat-square) <br>
 [Workflow JSON](alerta-climatico.json)
 - **Agendamento diário**: todo dia às 9h o nó Schedule Trigger dispara automaticamente o processo.
 - **Coleta de dados**: conecta-se à API do OpenWeatherMap para obter o clima (pt‑BR).

@@ -6,4 +6,4 @@ Contato: gustavohsc.contato@gmail.com | +55(31)99251-0873
 ---
 
 # Projetos
-[Alerta Climático](./workflows/alerta-climatico/alerta-climatico.md)
+[Alerta Climático](./workflows/alerta-climatico/alerta-climatico.md) ![Complexidade: 1/5](https://img.shields.io/badge/Complexidade-1%2F5-red?style=flat-square)
