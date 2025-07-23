@@ -5,7 +5,7 @@ Contato: gustavohsc.contato@gmail.com | +55(31)99251-0873
 
 ---
 
-# Projetos <img src="./img/n8n-color.svg" alt="n8n logo" width="45" align="center" />
+# Projetos <img src="./img/n8n-color.svg" alt="n8n logo" width="40" align="center" />
 | Projeto | Descrição rápida | Complexidade |
 |:------- |:----------------:|:------------:|
 | [Alerta Climático](./workflows/alerta-climatico/alerta-climatico.md) | Monitora condições meteorológicas extremas e envia alertas automáticos. | ![](https://img.shields.io/badge/1%2F5-blue?style=flat-square) |
