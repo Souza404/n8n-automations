@@ -25,7 +25,7 @@ A equipe de suporte recebe diariamente diversos e‑mails em uma caixa única. H
 
 ## Automação
 
-![Automação](../../img/distribuidor-suporte.png)
+![Automação](../../img/distribuidor-suporte.png)<br>
 [Workflow JSON](distribuidor-suporte.json)
 - **Gmail Trigger** dispara a cada minuto ao detectar novo e‑mail.
 - **Basic LLM Chain utiliza** o remetente e assunto, e retorna apenas a categoria: `tecnico`, `financeiro` ou `comercial`.
