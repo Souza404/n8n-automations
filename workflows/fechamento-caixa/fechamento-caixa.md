@@ -30,7 +30,7 @@ Automatiza, todo dia às 18:30, a coleta de despesas lançadas em um planilha, a
 ## Automação
 
 ![Automação](../../img/fechamento-caixa.png)
-[Workflow JSON](alerta-climatico.json)
+[Workflow JSON](fechamento-caixa.json)
 - **Agendamento diário** às 18:30 dispara o workflow.
 - **Date & Time** extrai a data atual (YYYY‑MM‑DD).
 - **Google Sheets** consulta as linhas da planilha do dia atual.
