@@ -1,0 +1,457 @@
+{
+  "name": "Fechamento de Caixa",
+  "nodes": [
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "39384077-3e4a-47e8-8c70-761598b84df4",
+              "leftValue": "={{ $json.Valor }}",
+              "rightValue": 1000,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "66adda06-48a3-4f91-a189-c641dc266ded",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        420,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "model": "llama-3.3-70b-versatile",
+        "options": {}
+      },
+      "id": "48a6defa-e7a5-43c6-b6d3-66348569d7bb",
+      "name": "Groq Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        1100,
+        220
+      ],
+      "credentials": {
+        "groqApi": {
+          "id": "5OLOZq5hGIFWJMPh",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "llama-3.3-70b-versatile",
+        "options": {}
+      },
+      "id": "a24c2f33-6509-4769-92f3-abda39db03de",
+      "name": "Groq Chat Model1",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        1100,
+        500
+      ],
+      "credentials": {
+        "groqApi": {
+          "id": "5OLOZq5hGIFWJMPh",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "includeTime": false,
+        "outputFieldName": "datetime",
+        "options": {}
+      },
+      "id": "ac746fc5-0fc5-47cf-a1a7-ea0facc4a62b",
+      "name": "Date & Time",
+      "type": "n8n-nodes-base.dateTime",
+      "typeVersion": 2,
+      "position": [
+        40,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 18,
+              "triggerAtMinute": 30
+            }
+          ]
+        }
+      },
+      "id": "661ef8d3-0675-4300-a1fd-f1506b72f910",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -140,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "46f35575-7b95-4823-bfb5-dfc3d13ab1dd",
+              "name": "Despesas",
+              "value": "={{ $json['Descrição'] }}: R${{ $json.Valor }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a2ab06b4-955c-4889-ada3-69017c3d6d23",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        640,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "id": "d73dab8e-cab1-4003-89bb-e0402bf9a632",
+      "name": "Aggregate",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        820,
+        80
+      ],
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "46f35575-7b95-4823-bfb5-dfc3d13ab1dd",
+              "name": "Despesas",
+              "value": "={{ $json['Descrição'] }}: {{ $json.Valor }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "9581f726-7e78-4611-85df-01e929eb39a2",
+      "name": "Edit Fields1",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        620,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "id": "a893260c-9b3c-49d3-95ed-f3aa8dc35781",
+      "name": "Aggregate1",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        820,
+        360
+      ],
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=<Position>\nYou're an outlier. You are both the CFO of DascIA and have expertise in front-end programming. You have over 20 years' experience with front-end and have been CFO of DascIA for 10 years. Your name is Alberto.\n</Position>\n\n<Instructions>\nYou only report on non-urgent expenses. The format of your response is always HTML, where the expenses are in a table. Above the table is a short text from you talking about the report. Below that, a “Sincerely, Alberto”.\n\nThis is a text that will be sent to the company's managers in an e-mail.\n</Instructions>\n\n<Expenses>\n{{ $json.data.map(item => item.Despesas) }}\n</Expenses>\n\n<General rules>\nDon't be long-winded. Write in pt-BR.\n</General rules>"
+      },
+      "id": "ef02bfe8-fd4b-4fac-9f79-74e2b685c2f8",
+      "name": "Basic LLM Chain1",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.4,
+      "position": [
+        1000,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=<Role>\nYou are responsible for making financial reports for DascIA. You are the CFO of this company, with over 30 years' experience in the sector. Your name is Alberto.\n</Role>\n\n<Instructions>\nYou only report on urgent expenses (all expenses that come to you are urgent). You should only report expenses. You should not give any advice.\n</Instructions>\n\n<Expenses>\n{{ $json.data.map(objeto => objeto.Despesas) }}\n</Expenses>\n\n<General rules>\nDon't be long-winded. Just report the expenses and that's all. Write in pt-BR.\n</General rules>"
+      },
+      "id": "f144202c-3acd-4e10-8049-2d9ce8e6a49a",
+      "name": "Basic LLM Chain",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.4,
+      "position": [
+        1000,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "sendTo": "gustavohsc.contato@gmail.com",
+        "subject": "=Fechamento de caixa | {{ $('Date & Time').all().last().json.datetime.slice(0, 10) }}",
+        "message": "={{ $json.text }}",
+        "options": {}
+      },
+      "id": "0694050b-500e-4c3b-8891-71367de86f6c",
+      "name": "Send a message",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1340,
+        360
+      ],
+      "webhookId": "efa92a4c-c5de-4deb-9835-62a446bf24ec",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "T67cib9T3DBgrhbf",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1GrXZ-tafojnAeV44ltwS0kbBqHBzufdmAG_ZhfxAkIA",
+          "mode": "list",
+          "cachedResultName": "Despesas",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1GrXZ-tafojnAeV44ltwS0kbBqHBzufdmAG_ZhfxAkIA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Página1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1GrXZ-tafojnAeV44ltwS0kbBqHBzufdmAG_ZhfxAkIA/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Data",
+              "lookupValue": "={{ $json.datetime.split(\"T\")[0] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "28dc721d-34d5-42c0-86e0-66a960be6056",
+      "name": "Get row(s) in sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        220,
+        200
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "5ijGrEdvbo9reSm9",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "gustavohsc.contato@gmail.com",
+        "subject": "=Fechamento de caixa | {{ $('Date & Time').all().last().json.datetime.slice(0, 10) }}",
+        "message": "={{ $json.text }}",
+        "options": {}
+      },
+      "id": "de724338-2238-48c9-b130-3b129ddc439f",
+      "name": "Send a message1",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1340,
+        80
+      ],
+      "webhookId": "efa92a4c-c5de-4deb-9835-62a446bf24ec",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "T67cib9T3DBgrhbf",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Date & Time": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Date & Time",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Aggregate1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate1": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain1": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "aa6bbeb8-1190-4cd7-b6e4-82c0367abeff",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f68082e8eb2ca86dfbb4aef53856fa9ec140dfe4dea002184f7d06db00b4f0a5"
+  },
+  "id": "bkqb80W5RjRR6if4",
+  "tags": []
+}
