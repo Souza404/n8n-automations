@@ -1,0 +1,794 @@
+{
+  "name": "Gerenciador de Leads",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3b532500-3cb3-4a4d-83a0-be3d44a54567",
+              "name": "data_envio",
+              "value": "={{ $json.body.form_response.submitted_at }}",
+              "type": "string"
+            },
+            {
+              "id": "cc1ecdbf-cf70-4f8c-9b30-8d3f9e0fd843",
+              "name": "={{ $json.body.form_response.definition.fields[0].title }}",
+              "value": "={{ $json.body.form_response.answers[0].text }}",
+              "type": "string"
+            },
+            {
+              "id": "922bd676-f794-46fa-ba97-f49ee34d5c3d",
+              "name": "={{ $json.body.form_response.definition.fields[1].title }}",
+              "value": "={{ $json.body.form_response.answers[1].email }}",
+              "type": "string"
+            },
+            {
+              "id": "1b6e1d21-9741-464f-b6ce-c29acaf220ef",
+              "name": "={{ $json.body.form_response.definition.fields[2].title }}",
+              "value": "={{ $json.body.form_response.answers[2].url }}",
+              "type": "string"
+            },
+            {
+              "id": "ef7ddb9e-bcd7-49f8-a970-85dfadf2cdd3",
+              "name": "={{ $json.body.form_response.definition.fields[3].title }}",
+              "value": "={{ $json.body.form_response.answers[3].choice.label }}",
+              "type": "string"
+            },
+            {
+              "id": "bcd0d6e0-6da7-4c67-844c-25efc24356dc",
+              "name": "={{ $json.body.form_response.definition.fields[4].title }}",
+              "value": "={{ $json.body.form_response.answers[4].text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c90f19d1-4b34-4a39-bca6-574331d869a0",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -960,
+        260
+      ]
+    },
+    {
+      "parameters": {
+        "listId": "={{ $('Edit Fields1').item.json.idList }}",
+        "name": "={{ $('Edit Fields').item.json['Qual o seu nome?'] }} | {{ $('Edit Fields').item.json['Qual o seu melhor e-mail?'] }}",
+        "description": "={{ $json.text }}",
+        "additionalFields": {}
+      },
+      "id": "6d9feb2f-be1c-41da-b1b5-e921cda296a4",
+      "name": "Trello",
+      "type": "n8n-nodes-base.trello",
+      "typeVersion": 1,
+      "position": [
+        -220,
+        260
+      ],
+      "credentials": {
+        "trelloApi": {
+          "id": "JcCHeqeMw0BjwsG3",
+          "name": "Trello account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a8fedd3c-2c5c-4fee-9545-d5dd9459b4a6",
+              "name": "idList",
+              "value": "={{ $json['Qual o tipo da sua demanda?'].toLowerCase() == \"serviço de dados\" ? \"672107390f4e328bfd73b669\" : $json['Qual o tipo da sua demanda?'].toLowerCase() == \"serviço de ia\" ? \"6721073d0869dc68eb97cd23\" : $json['Qual o tipo da sua demanda?'].toLowerCase() == \"treinamento de dados\" ? \"6721074314432a7c113b8cd9\" : \"67210747a42a619dc7126c8f\"}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f1b0fef1-4e52-49e8-ad8c-cd96d9899895",
+      "name": "Edit Fields1",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -740,
+        260
+      ]
+    },
+    {
+      "parameters": {
+        "model": "llama3-70b-8192",
+        "options": {}
+      },
+      "id": "53e439d8-9a46-4ba4-a35b-064dbb03c570",
+      "name": "Groq Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -460,
+        400
+      ],
+      "credentials": {
+        "groqApi": {
+          "id": "5OLOZq5hGIFWJMPh",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "checklist",
+        "operation": "create",
+        "cardId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "name": "=Tarefas",
+        "additionalFields": {}
+      },
+      "id": "eb978ec4-7988-40f3-982e-3c4ec59fa4f8",
+      "name": "Trello1",
+      "type": "n8n-nodes-base.trello",
+      "typeVersion": 1,
+      "position": [
+        -40,
+        260
+      ],
+      "credentials": {
+        "trelloApi": {
+          "id": "JcCHeqeMw0BjwsG3",
+          "name": "Trello account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "llama3-70b-8192",
+        "options": {}
+      },
+      "id": "52b7a232-79dc-40ea-9148-b78df802621a",
+      "name": "Groq Chat Model1",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        460,
+        400
+      ],
+      "credentials": {
+        "groqApi": {
+          "id": "5OLOZq5hGIFWJMPh",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "checklist",
+        "operation": "createCheckItem",
+        "checklistId": "={{ $('Edit Fields3').item.json.checklist }}",
+        "name": "={{ $json.text }}",
+        "additionalFields": {}
+      },
+      "id": "cf6a2fbf-5fea-4974-bc57-ee786a9d303b",
+      "name": "Trello2",
+      "type": "n8n-nodes-base.trello",
+      "typeVersion": 1,
+      "position": [
+        1140,
+        260
+      ],
+      "alwaysOutputData": true,
+      "executeOnce": false,
+      "credentials": {
+        "trelloApi": {
+          "id": "JcCHeqeMw0BjwsG3",
+          "name": "Trello account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7ab649b2-4b8e-4c06-b2e7-6b931c256e17",
+              "name": "checklist",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "13f04430-bde6-48a5-88ce-483cb2976bfc",
+      "name": "Edit Fields3",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        160,
+        260
+      ]
+    },
+    {
+      "parameters": {
+        "model": "llama3-70b-8192",
+        "options": {}
+      },
+      "id": "b89a0d76-e43a-4760-99da-0838cd1cf23f",
+      "name": "Groq Chat Model2",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        1340,
+        400
+      ],
+      "credentials": {
+        "groqApi": {
+          "id": "5OLOZq5hGIFWJMPh",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "d441d15d-1a16-4284-b317-7ae5a28d90b8",
+      "name": "Auto-fixing Output Parser",
+      "type": "@n8n/n8n-nodes-langchain.outputParserAutofixing",
+      "typeVersion": 1,
+      "position": [
+        1460,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "model": "llama3-70b-8192",
+        "options": {}
+      },
+      "id": "ad247d24-9cf2-4c2e-9d77-4e760efbf66f",
+      "name": "Groq Chat Model3",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        1480,
+        680
+      ],
+      "credentials": {
+        "groqApi": {
+          "id": "5OLOZq5hGIFWJMPh",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n\t\"type\": \"object\",\n\t\"properties\": {\n\t\t\"assunto\": {\n\t\t\t\"type\": \"string\",\n          \"description\": \"assunto do e-mail\"\n\t\t},\n\t\t\"corpo\": {\n\t\t\t\"type\": \"string\"\n\t\t}\n\t}\n}"
+      },
+      "id": "179d2860-4c81-48f4-bed8-bec2df11fbc4",
+      "name": "Structured Output Parser",
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        1620,
+        680
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "792c3d15-e578-4db3-97ba-ec4d0be0f099",
+        "options": {}
+      },
+      "id": "d023689d-6f37-4417-a6b3-77847fb6b548",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -1160,
+        260
+      ],
+      "webhookId": "792c3d15-e578-4db3-97ba-ec4d0be0f099"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=<Cargo>\nVocê é um assistente adminstrativo da DascIA, uma empresa de consultoria e treinamento em Dados e IA. Você já tem experiência com isso há mais de 20 anos. Além disso, você sabe muito bem sobre inteligência artificial e dados.\n\nVocê é o responsável por fazer a adminstração e o report de todas as solicitações de projetos que a DascIA recebe.\n\nVocê chama-se Alberto.\n</Cargo>\n\n<Instruções>\nA partir da descrição e da categoria do tipo de serviço ou treinamento que o cliente quer, faça uma descrição MUITO bem detalhada sobre o projeto a ser feito.\n\nA sua mensagem será colocada em uma descrição no Trello para que o time da DascIA consiga ter clareza da requisição do cliente.\n\nUse o <Formato de Resposta>\n</Instruções>\n\n\n<Descrição do Projeto>\nNome, e-mail e site do cliente: {{ $('Edit Fields').item.json['Qual o seu nome?'] }}, {{ $('Edit Fields').item.json['Qual o seu melhor e-mail?'] }}, {{ $('Edit Fields').item.json['Qual o link do seu site?'] }}\nCategoria: {{ $('Edit Fields').item.json['Qual o tipo da sua demanda?'] }}\nDescrição do cliente: {{ $('Edit Fields').item.json['Descreva, com detalhes, a sua demanda'][''] }}\n</Descrição do Projeto>\n\n<Formato de Resposta>\n**Solicitante**: [nome (e-mail)]\\\n**Informações**: [resumo de uma linha do que o cliente quer]\n**Descrição detalhada**: [sua descrição detalhada do projeto]\n</Formato de Resposta>\n\n<Sobre a DascIA>\nA DascIA é uma empresa de consultoria e treinamento em Dados e IA.\n\nFerramentas utilizadas pela DascIA: Python, PowerBI, Langchain (R.A.G., IA applications), GCP, SQL, Excel, Langgraph (AI Agents)\n</Sobre a DascIA>\n\n<Regras Gerais>\nNão seja prolixo, seja formal, escreva SEMPRE em formato de parágrafos.\n</Regras Gerais>"
+      },
+      "id": "867ce293-2679-4de4-b180-52be31274866",
+      "name": "Basic LLM Chain",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.4,
+      "position": [
+        -560,
+        260
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "80e40fe5-0165-46ae-8559-8bf77f378ba2",
+              "name": "text",
+              "value": "={{ $json.text.split(\",\") }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "90b5e959-1551-4f39-b493-809968a8cb9b",
+      "name": "Edit Fields2",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        720,
+        260
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "text",
+        "options": {}
+      },
+      "id": "bc1168c8-0f52-45a9-939f-af3039465ab3",
+      "name": "Split Out",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        920,
+        260
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=<Cargo>\nVocê é um assistente adminstrativo da DascIA, uma empresa de consultoria e treinamento em Dados e IA. Você já tem experiência com isso há mais de 20 anos. Além disso, você sabe muito bem sobre inteligência artificial e dados.\n\nVocê é o responsável por fazer a adminstração e o report de todas as solicitações de projetos que a DascIA recebe.\n\nVocê chama-se Alberto.\n</Cargo>\n\n<Instruções>\nA partir da descrição do serviço que o cliente requisitou e os passos a serem tomados durante a execução do projeto, escreva um e-mail formal que será encaminhado ao cliente.\n\nO e-mail deve deixar claroa intenção do projeto, o que será feito (em alto nível, mas ao mesmo tempo rico em informações).\n\nAo final, deve ser pedido que o cliente responda o e-mail com a melhor data e horário para marcar uma reunião de alinhamento para iniciar o projeto e fechar o contrato.\n</Instruções>\n\n\n<Descrição do Projeto>\n{{ $('Basic LLM Chain').item.json.text }}\n</Descrição do Projeto>\n\n<Checklist do projeto>\n{{ $('Basic LLM Chain1').item.json.text }}\n</Checklist do projeto>\n\n<Sobre a DascIA>\nA DascIA é uma empresa de consultoria e treinamento em Dados e IA.\n\nFerramentas utilizadas pela DascIA: Python, PowerBI, Langchain (R.A.G., IA applications), GCP, SQL, Excel, Langgraph (AI Agents)\n</Sobre a DascIA>\n\n<Regras Gerais>\nNão seja prolixo, seja formal.\n\nRetorne o o assunto e o corpo do e-mail (formatado corretamente utilizando \\n) em formato JSON:\n{\"assunto\": assunto, \"corpo\": corpo}\n\nNo máximo 150 tokens.\n</Regras Gerais>",
+        "hasOutputParser": true
+      },
+      "id": "e3d41fc2-68a4-4523-aa94-bc7ec39fc60b",
+      "name": "Basic LLM Chain2",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.4,
+      "position": [
+        1340,
+        260
+      ],
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=<Cargo>\nVocê é um assistente adminstrativo da DascIA, uma empresa de consultoria e treinamento em Dados e IA. Você já tem experiência com isso há mais de 20 anos. Além disso, você sabe muito bem sobre inteligência artificial e dados.\n\nVocê é o responsável por fazer a adminstração e o report de todas as solicitações de projetos que a DascIA recebe.\n\nVocê chama-se Alberto.\n</Cargo>\n\n<Instruções>\nA partir da descrição e da categoria do tipo de serviço ou treinamento que o cliente quer, descreva as tarefas a serem feitas, PASSO A PASSO, separadas por vírgula.\n\nAs tarefas devem ser realmente desde o início do projeto até o final.\n</Instruções>\n\n\n<Descrição do Projeto>\n{{ $('Basic LLM Chain').item.json.text }}\n</Descrição do Projeto>\n\n<Sobre a DascIA>\nA DascIA é uma empresa de consultoria e treinamento em Dados e IA.\n\nFerramentas utilizadas pela DascIA: Python, PowerBI, Langchain (R.A.G., IA applications), GCP, SQL, Excel, Langgraph (AI Agents)\n</Sobre a DascIA>\n\n<Regras Gerais>\nNão seja prolixo, seja formal, separe as tarefas por vírgula. Retorne APENAS as tarefas separadas por vírgula. Nada mais!\n</Regras Gerais>"
+      },
+      "id": "0c5e64ea-7f43-4b89-a1d3-847d268714ab",
+      "name": "Basic LLM Chain1",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.4,
+      "position": [
+        360,
+        260
+      ]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Edit Fields').all()[0].json['Qual o seu melhor e-mail?'] }}",
+        "subject": "={{ $json.output.assunto }}",
+        "emailType": "text",
+        "message": "={{ $json.output.corpo }}",
+        "options": {}
+      },
+      "id": "d9e484eb-1180-4b87-96ee-78b993afe06b",
+      "name": "Send a message",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1700,
+        260
+      ],
+      "webhookId": "a92fe752-3159-4b99-b0d9-c640d737024e",
+      "executeOnce": true,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "T67cib9T3DBgrhbf",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "anwarhermuche.app.n8n.cloud",
+            "user-agent": "Typeform Webhooks",
+            "content-length": "2451",
+            "accept-encoding": "gzip, br",
+            "cdn-loop": "cloudflare; loops=1; subreqs=1",
+            "cf-connecting-ip": "18.210.136.162",
+            "cf-ew-via": "15",
+            "cf-ipcountry": "US",
+            "cf-ray": "8da468570636c968-IAD",
+            "cf-visitor": "{\"scheme\":\"https\"}",
+            "cf-worker": "n8n.cloud",
+            "content-type": "application/json",
+            "traceparent": "00-5af9f242fdf1a206bc9cad229e510ea0-9ca3f8203d85c4d1-01",
+            "x-forwarded-for": "18.210.136.162, 172.68.245.57",
+            "x-forwarded-host": "anwarhermuche.app.n8n.cloud",
+            "x-forwarded-port": "443",
+            "x-forwarded-proto": "https",
+            "x-forwarded-server": "traefik-prod-users-gwc-2-566f58fd7b-r6qfb",
+            "x-is-trusted": "yes",
+            "x-real-ip": "18.210.136.162"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "event_id": "01JBCGCW1S1A39708HTNN0QZ76",
+            "event_type": "form_response",
+            "form_response": {
+              "form_id": "ThcQCXSU",
+              "token": "efdi4e4cxvhiuo1ryefdi4edu90z7hrd",
+              "landed_at": "2024-10-29T16:04:37Z",
+              "submitted_at": "2024-10-29T16:05:30Z",
+              "definition": {
+                "id": "ThcQCXSU",
+                "title": "My new form",
+                "fields": [
+                  {
+                    "id": "Plb5Wscs5IXC",
+                    "ref": "01JBCF9EN1BVB7023DBZT87ARY",
+                    "type": "short_text",
+                    "title": "Qual o seu nome?",
+                    "properties": {}
+                  },
+                  {
+                    "id": "RYflkT1GXYIy",
+                    "ref": "721fe4ea-be86-4090-a580-8e93fb96574c",
+                    "type": "email",
+                    "title": "Qual o seu melhor e-mail?",
+                    "properties": {}
+                  },
+                  {
+                    "id": "PmQLHVN7eMep",
+                    "ref": "5ac9d008-a24f-4473-a24c-d165c65bee13",
+                    "type": "website",
+                    "title": "Qual o link do seu site?",
+                    "properties": {}
+                  },
+                  {
+                    "id": "zgYacgIIOMaU",
+                    "ref": "2145f3c8-acaa-4e61-915f-bf919f0c0cd6",
+                    "type": "dropdown",
+                    "title": "Qual o tipo da sua demanda?",
+                    "properties": {},
+                    "choices": [
+                      {
+                        "id": "8dj25kFapkUW",
+                        "ref": "00cd2901-e6a0-49b1-b6e3-ad2e8b00972e",
+                        "label": "Serviço de Dados"
+                      },
+                      {
+                        "id": "jM8cUMG3oac8",
+                        "ref": "664e6ea6-164f-4c32-a3dd-61771a09a14f",
+                        "label": "Serviço de IA"
+                      },
+                      {
+                        "id": "N9uaKIORjYmg",
+                        "ref": "23b37158-4a55-450b-ab22-b9959962237a",
+                        "label": "Treinamento de Dados"
+                      },
+                      {
+                        "id": "OSM67IcItcb7",
+                        "ref": "5c88a90d-0375-4fe8-8b88-a0333b0d4451",
+                        "label": "Treinamento de Dados"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "rfCUpkpN1Pfk",
+                    "ref": "318c4706-83c2-46ed-84ef-0cf79c571823",
+                    "type": "long_text",
+                    "title": "Descreva, com detalhes, a sua demanda.",
+                    "properties": {}
+                  }
+                ],
+                "endings": [
+                  {
+                    "id": "R1z1FvVfXO9S",
+                    "ref": "thankyou-screen",
+                    "title": "",
+                    "type": "thankyou_screen",
+                    "properties": {
+                      "button_text": "Create a typeform",
+                      "show_button": true,
+                      "share_icons": true,
+                      "button_mode": "default_redirect"
+                    }
+                  }
+                ]
+              },
+              "answers": [
+                {
+                  "type": "text",
+                  "text": "Joemerson",
+                  "field": {
+                    "id": "Plb5Wscs5IXC",
+                    "type": "short_text",
+                    "ref": "01JBCF9EN1BVB7023DBZT87ARY"
+                  }
+                },
+                {
+                  "type": "email",
+                  "email": "joe@gmail.com",
+                  "field": {
+                    "id": "RYflkT1GXYIy",
+                    "type": "email",
+                    "ref": "721fe4ea-be86-4090-a580-8e93fb96574c"
+                  }
+                },
+                {
+                  "type": "url",
+                  "url": "https://joejoe.com.br",
+                  "field": {
+                    "id": "PmQLHVN7eMep",
+                    "type": "website",
+                    "ref": "5ac9d008-a24f-4473-a24c-d165c65bee13"
+                  }
+                },
+                {
+                  "type": "choice",
+                  "choice": {
+                    "id": "N9uaKIORjYmg",
+                    "label": "Treinamento de Dados",
+                    "ref": "23b37158-4a55-450b-ab22-b9959962237a"
+                  },
+                  "field": {
+                    "id": "zgYacgIIOMaU",
+                    "type": "dropdown",
+                    "ref": "2145f3c8-acaa-4e61-915f-bf919f0c0cd6"
+                  }
+                },
+                {
+                  "type": "text",
+                  "text": "Quero fazer um dashboard para a minha empresa para acompanhar todas as métricas",
+                  "field": {
+                    "id": "rfCUpkpN1Pfk",
+                    "type": "long_text",
+                    "ref": "318c4706-83c2-46ed-84ef-0cf79c571823"
+                  }
+                }
+              ],
+              "ending": {
+                "id": "R1z1FvVfXO9S",
+                "ref": "thankyou-screen"
+              }
+            }
+          },
+          "webhookUrl": "https://anwarhermuche.app.n8n.cloud/webhook-test/792c3d15-e578-4db3-97ba-ec4d0be0f099",
+          "executionMode": "test"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trello": {
+      "main": [
+        [
+          {
+            "node": "Trello1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trello1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trello2": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Auto-fixing Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Basic LLM Chain2",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Auto-fixing Output Parser",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Auto-fixing Output Parser",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Trello",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Trello2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain2": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1036e44c-8181-423f-b917-b4c15711c117",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f68082e8eb2ca86dfbb4aef53856fa9ec140dfe4dea002184f7d06db00b4f0a5"
+  },
+  "id": "xdM7Ov369rjwffbs",
+  "tags": []
+}
