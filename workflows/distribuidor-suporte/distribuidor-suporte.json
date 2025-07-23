@@ -1,0 +1,289 @@
+{
+  "name": "Distribuidor Inteligente de Suporte",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "filters": {}
+      },
+      "id": "60c883c4-3393-4bb4-ba57-ab44b9e345f6",
+      "name": "Gmail Trigger",
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1180,
+        100
+      ],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "T67cib9T3DBgrhbf",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "llama3-70b-8192",
+        "options": {}
+      },
+      "id": "4ece84cf-ffb2-4f6c-82f1-73233238889f",
+      "name": "Groq Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -900,
+        240
+      ],
+      "credentials": {
+        "groqApi": {
+          "id": "5OLOZq5hGIFWJMPh",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "llama3-70b-8192",
+        "options": {}
+      },
+      "id": "ab965332-2faf-4f16-9f30-900c330c2dad",
+      "name": "Groq Chat Model1",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        240
+      ],
+      "credentials": {
+        "groqApi": {
+          "id": "5OLOZq5hGIFWJMPh",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "listId": "6720dda46086d0cb03bc9804",
+        "name": "={{ $('Gmail Trigger').item.json.Subject }}",
+        "description": "={{ $json.text }}",
+        "additionalFields": {}
+      },
+      "id": "7ea3b02f-8f6b-459f-bbfa-382aa71e332a",
+      "name": "Trello1",
+      "type": "n8n-nodes-base.trello",
+      "typeVersion": 1,
+      "position": [
+        -100,
+        280
+      ],
+      "credentials": {
+        "trelloApi": {
+          "id": "JcCHeqeMw0BjwsG3",
+          "name": "Trello account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "listId": "=6720dda43763493ffb5fc780",
+        "name": "={{ $('Gmail Trigger').item.json.Subject }}",
+        "description": "={{ $json.text }}",
+        "additionalFields": {}
+      },
+      "id": "29526535-7866-44e5-ac1d-8a4b49d13a50",
+      "name": "Trello2",
+      "type": "n8n-nodes-base.trello",
+      "typeVersion": 1,
+      "position": [
+        -100,
+        100
+      ],
+      "credentials": {
+        "trelloApi": {
+          "id": "JcCHeqeMw0BjwsG3",
+          "name": "Trello account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "listId": "6720dda49b964129e94fcefb",
+        "name": "={{ $('Gmail Trigger').item.json.Subject }}",
+        "description": "={{ $json.text }}",
+        "additionalFields": {}
+      },
+      "id": "458b6a3b-8cff-4342-b338-bd6cac1a5843",
+      "name": "Trello",
+      "type": "n8n-nodes-base.trello",
+      "typeVersion": 1,
+      "position": [
+        -100,
+        -60
+      ],
+      "credentials": {
+        "trelloApi": {
+          "id": "JcCHeqeMw0BjwsG3",
+          "name": "Trello account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=<Position>\nYou're a professional called AIberto responsible for summarizing emails. You've been doing this for over 20 years.\n</Position>\n\n<Instructions>\nYou have to present all the information in the email: start by saying who sent it and what the title is. Then give a brief summary (40 tokens) of what the person sent. Finally, display the body of the original email.\n</Instructions>\n\n<Background>\nAll emails are forwarded by someone to Anwar, founder of DascIA, a Data & AI consulting and training company. But you will not report to him, but in the \"{{ $json.text }}\" company's slack channel for the responsibles of the {{ $json.text }} area in DascIA.\n</Context>\n\n<E-mail>\nWho sent it: {{ $('Gmail Trigger').item.json.From }}\nTitle: {{ $('Gmail Trigger').item.json.Subject }}\nEmail body: {{ $('Gmail Trigger').item.json.snippet }}\n</E-mail>\n\n<General rules>\nDon't be long-winded and write in Brazilian Portuguese.\n</General rules>"
+      },
+      "id": "471a1cea-2e43-45a4-98f1-698c868b0f9a",
+      "name": "Basic LLM Chain1",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.4,
+      "position": [
+        -660,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=<Position>\nYou're an expert in email ticket classification. You've been working with classification for over 20 years.\n</Position>\n\n<Instruction>\nClassify incoming email into three possible categories: tecnico, financeiro, comercial.\n</Instruction>\n\n<Categories>\n- tecnico: when the subject is related to the technical side of the company\n- financeiro: when it is a financial matter\n- comercial: when the subject is related to the commercial side of the company\n</Categories>\n\n<E-mail>\nTitle: {{ $json.Subject }}\nEmail text: {{ $json.snippet }}\n</E-mail>\n\n<General Rules>\nReturn ONLY the name of the category. Nothing beyond that. You will be penalized if you return anything other than the category name.\n</General Rules>"
+      },
+      "id": "de92ad48-40a5-412a-aab1-7084fe6b319c",
+      "name": "Basic LLM Chain",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.4,
+      "position": [
+        -1000,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "expression",
+        "numberOutputs": 3,
+        "output": "={{$('Basic LLM Chain').item.json.text == \"comercial\" ? 0 : $('Basic LLM Chain').item.json.text == \"financeiro\" ? 1 : 2}}"
+      },
+      "id": "58620434-ebc1-4b77-9e54-351f86853a2a",
+      "name": "Switch",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -320,
+        100
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trello1": {
+      "main": [
+        []
+      ]
+    },
+    "Trello2": {
+      "main": [
+        []
+      ]
+    },
+    "Trello": {
+      "main": [
+        []
+      ]
+    },
+    "Basic LLM Chain1": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Trello",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Trello2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Trello1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "11e5f193-29a2-4fe8-8363-aeaba2ea3a06",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f68082e8eb2ca86dfbb4aef53856fa9ec140dfe4dea002184f7d06db00b4f0a5"
+  },
+  "id": "g8IjAXfLA5csaEaT",
+  "tags": []
+}

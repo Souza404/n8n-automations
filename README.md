@@ -10,6 +10,6 @@ Contato: gustavohsc.contato@gmail.com | +55(31)99251-0873
 |:------- |:----------------:|:------------:|
 | [Alerta Climático](./workflows/alerta-climatico/alerta-climatico.md) | Monitora condições meteorológicas extremas e envia alertas automáticos. | ![](https://img.shields.io/badge/1%2F5-blue?style=flat-square) |
 | [Fechamento de Caixa](./workflows/fechamento-caixa/fechamento-caixa.md) | Gera relatório de despesas urgente e não urgentes e envia por e‑mail todo dia. | ![](https://img.shields.io/badge/1%2F5-blue?style=flat-square) |
-| [Relatório Diário](./workflows/daily-report/daily-report.md) | Gera relatório meteorológico e envia por e‑mail todo dia. | ![](https://img.shields.io/badge/3%2F5-blue?style=flat-square) |
+| [Distribuidor Inteligente de Suporte](./workflows/distribuidor-suporte/distribuidor-suporte.md) | Gera um card no Trello para a fila de atendimento de acordo com a demanda | ![](https://img.shields.io/badge/2%2F5-blue?style=flat-square) |
 | [Backup Automático](./workflows/auto-backup/auto-backup.md) | Faz dump de banco e armazena no S3 periodicamente. | ![](https://img.shields.io/badge/1%2F5-blue?style=flat-square) |
 | [Outro Projeto](./workflows/outro/outro.md) | Descrição sucinta do que o fluxo faz. | ![](https://img.shields.io/badge/1%2F5-blue?style=flat-square) |
