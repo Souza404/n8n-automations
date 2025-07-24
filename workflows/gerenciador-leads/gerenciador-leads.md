@@ -17,11 +17,10 @@ Atualmente, quando um lead preenche o formulário (via Typeform), todo o process
 
 - n8n (versão 1.102.4)
 - Webhook
-- OpenWeatherMap API
 - LLM Chain
 - Groq Chat Model (`llama-3.1-70b-versatile`)
-- API Gmail
-- API Trello
+- Gmail
+- Trello
 
 ---
 

@@ -1,0 +1,430 @@
+{
+  "name": "Assistente de RH",
+  "nodes": [
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "queryString": "Currículo",
+        "returnAll": true,
+        "filter": {
+          "folderId": {
+            "__rl": true,
+            "value": "1SweEgBGOWH-j7VWz9RyWM1k1UWbmtxBF",
+            "mode": "list",
+            "cachedResultName": "Currículos",
+            "cachedResultUrl": "https://drive.google.com/drive/folders/1SweEgBGOWH-j7VWz9RyWM1k1UWbmtxBF"
+          }
+        },
+        "options": {}
+      },
+      "id": "61cec851-c324-465c-9e59-032dd3d7d266",
+      "name": "Encontra Currículos",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        260,
+        100
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "cVyO7QZwvb9uklPG",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {
+          "googleFileConversion": {
+            "conversion": {
+              "docsToFormat": "text/plain"
+            }
+          }
+        }
+      },
+      "id": "ea8ad3e4-1d97-40f2-9988-7a329c3a7650",
+      "name": "Baixa Arquivos",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        500,
+        100
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "cVyO7QZwvb9uklPG",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "options": {}
+      },
+      "id": "cedf2373-afbd-4215-b68f-51b7a06d2906",
+      "name": "Converte para Texto",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        720,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Obtenção de Currículos",
+        "height": 258.0964713064308,
+        "width": 903.9029040203084
+      },
+      "id": "128776ee-3f24-445d-ac91-8df71ecf800e",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "70a257de-d64a-4995-9e67-a3d460aeee16",
+              "name": "nota",
+              "value": "={{ $json.message.content.match(/Nota final:\\s*(\\d+)/)[1] }}",
+              "type": "number"
+            },
+            {
+              "id": "3751665a-74bb-4d9d-83b3-44338bff66e3",
+              "name": "analise",
+              "value": "={{ $json.message.content }}",
+              "type": "string"
+            },
+            {
+              "id": "dcb005d5-ed73-45b7-b632-17a72aec8bc5",
+              "name": "nome",
+              "value": "={{ $json.message.content.match(/Nome do candidato:\\s*(.+)\\n/)[1].trim() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "817ab3e4-974b-4d7a-8f74-0353b266deaf",
+      "name": "Extrai Informações",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        400,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "sortFieldsUi": {
+          "sortField": [
+            {
+              "fieldName": "nota",
+              "order": "descending"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f3b902bd-6007-46df-8e6c-445aa647f10f",
+      "name": "Ordena pela Nota",
+      "type": "n8n-nodes-base.sort",
+      "typeVersion": 1,
+      "position": [
+        600,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b2065cd7-c0d2-4729-8c6b-3ffcec6a770d",
+              "leftValue": "={{ $json.nota }}",
+              "rightValue": 80,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "e6afdae7-4dc3-46c1-b7b2-908c5d87576e",
+      "name": "Condicional",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        800,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "listId": "673cba12004a47a4a6235933",
+        "name": "=Currículo | {{ $json.nome }}",
+        "description": "=**Análise**:\n\n{{ $json.analise }}",
+        "additionalFields": {}
+      },
+      "id": "ab04bdb3-a66e-4ff2-80a2-2b07a39d805f",
+      "name": "Aprovado",
+      "type": "n8n-nodes-base.trello",
+      "typeVersion": 1,
+      "position": [
+        1060,
+        160
+      ],
+      "credentials": {
+        "trelloApi": {
+          "id": "JcCHeqeMw0BjwsG3",
+          "name": "Trello account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "listId": "673cba173661101ba625d3bb",
+        "name": "=Currículo | {{ $json.nome }}",
+        "description": "=**Análise**:\n\n{{ $json.analise }}",
+        "additionalFields": {}
+      },
+      "id": "cdb1e170-1b46-4971-8d74-bf45df5735c8",
+      "name": "Reprovado",
+      "type": "n8n-nodes-base.trello",
+      "typeVersion": 1,
+      "position": [
+        1060,
+        360
+      ],
+      "credentials": {
+        "trelloApi": {
+          "id": "JcCHeqeMw0BjwsG3",
+          "name": "Trello account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Analisa Currículo",
+        "height": 349,
+        "width": 909,
+        "color": 4
+      },
+      "id": "b6ec7bcf-7827-4fef-8809-be9338137444",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Adiciona no Trello",
+        "height": 410.302600770155,
+        "width": 262.88480921327204,
+        "color": 6
+      },
+      "id": "9bce5697-055b-4d3e-8110-928207a73521",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        980,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        40,
+        360
+      ],
+      "id": "e4525320-ed84-42c5-9c63-9d2cbb7b0f84",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "model": "llama3-70b-8192",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        140,
+        500
+      ],
+      "id": "e9e0508e-fbc1-4639-83b3-a25d5fdac9dd",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "5OLOZq5hGIFWJMPh",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "a04518fc-d631-44c1-88b0-45941e77e2b3",
+      "name": "Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        40,
+        100
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Encontra Currículos": {
+      "main": [
+        [
+          {
+            "node": "Baixa Arquivos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baixa Arquivos": {
+      "main": [
+        [
+          {
+            "node": "Converte para Texto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Converte para Texto": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extrai Informações": {
+      "main": [
+        [
+          {
+            "node": "Ordena pela Nota",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ordena pela Nota": {
+      "main": [
+        [
+          {
+            "node": "Condicional",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Condicional": {
+      "main": [
+        [
+          {
+            "node": "Aprovado",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Reprovado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reprovado": {
+      "main": [
+        []
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Extrai Informações",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trigger": {
+      "main": [
+        [
+          {
+            "node": "Encontra Currículos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "761c6f33-419c-4f7f-b383-0dcd169e295a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f68082e8eb2ca86dfbb4aef53856fa9ec140dfe4dea002184f7d06db00b4f0a5"
+  },
+  "id": "tmTjcS9cqMJ7MdEQ",
+  "tags": []
+}
